@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Quicksand', sans-serif;
+}
+
+body {
+    background-color: #fff0f5; 
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    color: #4a4a4a;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 400px; 
+    padding: 2rem 1.5rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: #ff6b81; 
+    margin-bottom: 0.5rem;
+}
+
+.subtitulo {
+    font-size: 1rem;
+    color: #888;
+}
+
+.menu-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.menu-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: #4a4a4a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.menu-card:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.menu-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.menu-card h2 {
+    font-size: 1.2rem;
+    color: #ff6b81;
+    margin-bottom: 0.3rem;
+}
+
+.menu-card p {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px); 
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.cerrar-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.titulo-modal {
+    color: #ff6b81;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.secreto-item {
+    background-color: #fff0f5;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.secreto-item:hover {
+    background-color: #ffe4eb;
+}
+
+.secreto-pregunta {
+    font-size: 1.1rem;
+    color: #4a4a4a;
+}
+
+.secreto-respuesta {
+    display: none; 
+    margin-top: 0.8rem;
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.4;
+    border-top: 1px dashed #ff6b81;
+    padding-top: 0.8rem;
+}
