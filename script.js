@@ -11,6 +11,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// ENLAZAR EL DESPERTADOR AUTOMÁTICO (SERVICE WORKER)
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Despertador de notificaciones listo.'))
+        .catch(err => console.error('Error al activar despertador:', err));
+}
+
 let fechaActualAlmanaque = new Date();
 let listaFechasGuardadas = []; 
 
@@ -36,6 +43,7 @@ cerrarCuriosidades.onclick = () => modalCuriosidades.style.display = "none";
 btnCalendario.onclick = () => {
     modalCalendario.style.display = "flex";
     cargarFechas(); 
+    solicitarPermisoNotificaciones(); // Le pide permiso de forma nativa al abrir el calendario
 };
 cerrarCalendario.onclick = () => modalCalendario.style.display = "none";
 
@@ -54,6 +62,18 @@ secretos.forEach(secreto => {
         });
     }
 });
+
+// SOLICITAR PERMISO NATIVO DEL NAVEGADOR
+function solicitarPermisoNotificaciones() {
+    if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted' && navigator.serviceWorker.controller) {
+                // Le avisa al despertador que haga una revisión rápida inicial
+                navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
+            }
+        });
+    }
+}
 
 // 4. FUNCIONES DEL ALMANAQUE NATIVO
 function dibujarAlmanaque() {
@@ -95,7 +115,6 @@ function dibujarAlmanaque() {
     html += `</div>`;
     contenedorAlmanaque.innerHTML = html;
 
-    // Navegación de meses
     document.getElementById("ant-mes").onclick = () => {
         fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() - 1);
         dibujarAlmanaque();
@@ -105,7 +124,6 @@ function dibujarAlmanaque() {
         dibujarAlmanaque();
     };
 
-    // Selección e interactividad al hacer click en los días
     const celdas = contenedorAlmanaque.querySelectorAll('.dia-celda:not(.dia-vacio)');
     celdas.forEach(celda => {
         celda.onclick = () => {
@@ -115,13 +133,10 @@ function dibujarAlmanaque() {
             const fechaSeleccionada = celda.getAttribute('data-fecha');
             fechaInput.value = fechaSeleccionada;
 
-            // NUEVO: Si tiene evento, desplaza suavemente hasta la tarjeta correspondiente
             if (celda.classList.contains('dia-con-evento')) {
                 const tarjetaObjetivo = document.getElementById(`tarjeta-${fechaSeleccionada}`);
                 if (tarjetaObjetivo) {
                     tarjetaObjetivo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Efecto de parpadeo visual
                     tarjetaObjetivo.classList.add('tarjeta-enfocada');
                     setTimeout(() => {
                         tarjetaObjetivo.classList.remove('tarjeta-enfocada');
@@ -166,7 +181,6 @@ function cargarFechas() {
 
             const div = document.createElement("div");
             div.className = "secreto-item glass-mini fecha-item";
-            /* NUEVO: Le asignamos un ID único usando la fecha para poder enlazar el scroll */
             div.id = `tarjeta-${nota.fecha}`; 
             div.innerHTML = `
                 <div class="fecha-header">
@@ -210,6 +224,11 @@ btnGuardarFecha.onclick = () => {
         descInput.value = "";
         btnGuardarFecha.innerText = "Guardar Fecha";
         cargarFechas(); 
+        
+        // Al guardar una fecha nueva, le avisa al despertador para que actualice su memoria
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
+        }
     }).catch((error) => {
         console.error("Error al guardar:", error);
         btnGuardarFecha.innerText = "Error, intenta de nuevo";
@@ -221,13 +240,16 @@ function eliminarFecha(id) {
     if (confirm("¿Estás seguro de que quieres borrar este recuerdo? 🥺")) {
         db.collection("fechas").doc(id).delete().then(() => {
             cargarFechas(); 
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
+            }
         }).catch((error) => {
             alert("No se pudo borrar, intenta de nuevo.");
         });
     }
 }
 
-// --- EDITAR EVENTO (DOBLE CLIC) ---
+// --- EDITAR EVENTO ---
 function editarFecha(id, descripcionActual) {
     const nuevoTexto = prompt("Edita tu recuerdo o plan:", descripcionActual);
     if (nuevoTexto === null || nuevoTexto.trim() === "") return;
@@ -236,5 +258,8 @@ function editarFecha(id, descripcionActual) {
         descripcion: nuevoTexto
     }).then(() => {
         cargarFechas(); 
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
+        }
     });
 }
