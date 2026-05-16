@@ -1,4 +1,6 @@
-/* Reseteo básico y tipos de fuente */
+/* ==========================================
+   1. RESETEO BÁSICO Y TIPOGRAFÍA
+   ========================================== */
 * {
     margin: 0;
     padding: 0;
@@ -7,41 +9,47 @@
 }
 
 body {
-    background-color: #050505; /* Fondo ultra oscuro */
+    background-color: #050505; /* Fondo ultra oscuro estético */
     color: #e0e0e0;
     display: flex;
     justify-content: center;
     min-height: 100vh;
-    overflow-x: hidden; 
+    overflow-x: hidden; /* Evita que las imágenes de fondo causen scroll horizontal */
     position: relative;
 }
 
-/* --- Elementos Estéticos de Fondo (Collage) --- */
+/* ==========================================
+   2. ELEMENTOS ESTÉTICOS DE FONDO (COLLAGE)
+   ========================================== */
 .background-aesthetic {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; 
-    opacity: 0.6;
+    z-index: -1; /* Se mantiene detrás de todos los botones */
+    opacity: 0.6; /* Le da un toque tenue y misterioso */
 }
 
-/* Imagen del mono estilizado en el fondo */
-.monkey {
+/* Tu imagen personalizada de la esquina superior izquierda */
+.imagen-destacada {
     position: absolute;
-    top: -30px; 
-    left: -80px; 
-    width: 280px; 
-    height: 280px; 
+    top: -40px;   /* Controla qué tan arriba se posiciona */
+    left: -70px;  /* Controla qué tan hacia la izquierda se esconde */
+    width: 260px; /* Tamaño de tu imagen */
+    height: 260px;
+    
+    /* REEMPLAZA ESTE LINK POR EL DE TU NUEVA IMAGEN PNG (con o sin puntitos) */
     background-image: url('https://i.imgur.com/KxS1YwT.png'); 
-    background-size: contain;
+    
+    background-size: contain; /* Se amolda automáticamente a la forma de la foto sin romperla */
     background-repeat: no-repeat;
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1)); 
-    opacity: 0.8; 
+    background-position: center;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15)); /* Destello sutil de fondo */
+    opacity: 0.8;
 }
 
-/* Imagen de flores blancas */
+/* Flores blancas decorativas en la esquina inferior derecha */
 .flores {
     position: absolute;
     bottom: -50px;
@@ -51,16 +59,18 @@ body {
     background-image: url('https://i.imgur.com/vH9xH6s.png');
     background-size: contain;
     background-repeat: no-repeat;
-    filter: grayscale(100%) brightness(80%);
+    filter: grayscale(100%) brightness(80%); /* Escala de grises para mantener la estética */
 }
 
-/* --- Contenedor Principal (Estilo App) --- */
+/* ==========================================
+   3. CONTENEDOR PRINCIPAL (ESTILO APP MÓVIL)
+   ========================================== */
 .app-container {
     width: 100%;
-    max-width: 400px; 
+    max-width: 400px; /* Limita el ancho en PC para simular un celular */
     padding: 2rem 1.5rem;
     position: relative;
-    z-index: 1; 
+    z-index: 1; /* Por encima del collage de fondo */
     display: flex;
     flex-direction: column;
 }
@@ -70,6 +80,7 @@ header {
     margin-bottom: 3rem;
 }
 
+/* Tipografía elegante cursiva para el título principal */
 .titulo-elegante {
     font-family: 'Allura', cursive;
     font-size: 3.5rem;
@@ -89,7 +100,9 @@ header {
     letter-spacing: 1px;
 }
 
-/* --- Menú de Botones (Glassmorphism) --- */
+/* ==========================================
+   4. INTERFAZ DE TARJETAS (GLASSMORPHISM)
+   ========================================== */
 .menu-grid {
     display: flex;
     flex-direction: column;
@@ -97,6 +110,7 @@ header {
     flex-grow: 1;
 }
 
+/* Efecto de vidrio esmerilado transparente */
 .glass {
     background: rgba(255, 255, 255, 0.03); 
     backdrop-filter: blur(10px); 
@@ -117,11 +131,13 @@ header {
     cursor: pointer;
 }
 
+/* Efecto visual al presionar la pantalla del cel */
 .menu-card:active {
     transform: scale(0.97) translateY(2px);
     background: rgba(255, 255, 255, 0.06);
 }
 
+/* Contenedor cuadrado e iluminado para los iconos */
 .icon-container {
     width: 50px;
     height: 50px;
@@ -136,7 +152,7 @@ header {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Color destacado rosa para el botón de secretos */
+/* Resaltado especial rosa solo para el botón de secretos */
 #btn-curiosidades .icon-container {
     background: rgba(255, 107, 129, 0.08);
     color: #ff6b81;
@@ -165,7 +181,7 @@ header {
     margin-left: 0.5rem;
 }
 
-/* Foto collage inferior */
+/* Foto collage inferior (Opcional) */
 .collage-inferior {
     margin-top: 3rem;
     display: flex;
@@ -183,9 +199,11 @@ header {
     opacity: 0.7;
 }
 
-/* --- Estilos para la Ventana Flotante (Modal Glass) --- */
+/* ==========================================
+   5. VENTANA FLOTANTE DE SECRETOS (MODAL)
+   ========================================== */
 .modal {
-    display: none; 
+    display: none; /* Se activa mediante JS */
     position: fixed;
     z-index: 100;
     left: 0;
@@ -205,7 +223,7 @@ header {
     padding: 2.5rem 1.5rem 1.5rem 1.5rem;
     position: relative;
     max-height: 85vh;
-    overflow-y: auto;
+    overflow-y: auto; /* Permite scroll dentro del cuadro si agregas muchos secretos */
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -229,6 +247,7 @@ header {
     text-align: center;
 }
 
+/* Estilo para las tarjetas individuales de secretos dentro del modal */
 .glass-mini {
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(5px);
@@ -254,6 +273,7 @@ header {
     font-weight: 600;
 }
 
+/* Respuesta oculta por defecto hasta hacer clic */
 .secreto-respuesta {
     display: none; 
     margin-top: 1rem;
