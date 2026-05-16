@@ -1,3 +1,4 @@
+/* Reseteo básico y tipos de fuente */
 * {
     margin: 0;
     padding: 0;
@@ -6,101 +7,206 @@
 }
 
 body {
-    background-color: #fff0f5; 
+    background-color: #050505; /* Fondo ultra oscuro */
+    color: #e0e0e0;
     display: flex;
     justify-content: center;
     min-height: 100vh;
-    color: #4a4a4a;
+    overflow-x: hidden; 
+    position: relative;
 }
 
+/* --- Elementos Estéticos de Fondo (Collage) --- */
+.background-aesthetic {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+    opacity: 0.6;
+}
+
+/* Imagen del mono estilizado en el fondo */
+.monkey {
+    position: absolute;
+    top: -30px; 
+    left: -80px; 
+    width: 280px; 
+    height: 280px; 
+    background-image: url('https://i.imgur.com/KxS1YwT.png'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1)); 
+    opacity: 0.8; 
+}
+
+/* Imagen de flores blancas */
+.flores {
+    position: absolute;
+    bottom: -50px;
+    right: -80px;
+    width: 250px;
+    height: 350px;
+    background-image: url('https://i.imgur.com/vH9xH6s.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: grayscale(100%) brightness(80%);
+}
+
+/* --- Contenedor Principal (Estilo App) --- */
 .app-container {
     width: 100%;
     max-width: 400px; 
     padding: 2rem 1.5rem;
+    position: relative;
+    z-index: 1; 
+    display: flex;
+    flex-direction: column;
 }
 
 header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
 }
 
-header h1 {
+.titulo-elegante {
+    font-family: 'Allura', cursive;
+    font-size: 3.5rem;
+    color: #fff;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.titulo-elegante .corazon {
     font-size: 2.5rem;
-    color: #ff6b81; 
-    margin-bottom: 0.5rem;
+    vertical-align: middle;
 }
 
 .subtitulo {
-    font-size: 1rem;
-    color: #888;
+    font-size: 0.95rem;
+    color: #b0b0b0;
+    letter-spacing: 1px;
 }
 
+/* --- Menú de Botones (Glassmorphism) --- */
 .menu-grid {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    flex-grow: 1;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.03); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); 
 }
 
 .menu-card {
-    background-color: #ffffff;
-    border-radius: 20px;
-    padding: 1.5rem;
+    padding: 1.2rem;
     text-decoration: none;
-    color: #4a4a4a;
+    color: #e0e0e0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    justify-content: space-between;
+    transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .menu-card:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transform: scale(0.97) translateY(2px);
+    background: rgba(255, 255, 255, 0.06);
 }
 
-.menu-card .icon {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+.icon-container {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.05); 
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #fff; 
+    margin-right: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Color destacado rosa para el botón de secretos */
+#btn-curiosidades .icon-container {
+    background: rgba(255, 107, 129, 0.08);
+    color: #ff6b81;
+    border: 1px solid rgba(255, 107, 129, 0.15);
+}
+
+.card-text {
+    flex-grow: 1;
 }
 
 .menu-card h2 {
-    font-size: 1.2rem;
-    color: #ff6b81;
-    margin-bottom: 0.3rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.1rem;
 }
 
 .menu-card p {
-    font-size: 0.9rem;
-    color: #777;
+    font-size: 0.85rem;
+    color: #aaa;
 }
 
+.arrow {
+    color: #555;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+/* Foto collage inferior */
+.collage-inferior {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.foto-pareja {
+    width: 150px;
+    height: 100px;
+    background-image: url('https://i.imgur.com/XF9VbN1.png');
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    filter: grayscale(100%);
+    opacity: 0.7;
+}
+
+/* --- Estilos para la Ventana Flotante (Modal Glass) --- */
 .modal {
     display: none; 
     position: fixed;
-    z-index: 10;
+    z-index: 100;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(3px); 
+    background-color: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
 .modal-content {
-    background-color: #fff;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 20px;
-    padding: 2rem;
+    width: 100%;
+    max-width: 360px;
+    border-radius: 25px;
+    padding: 2.5rem 1.5rem 1.5rem 1.5rem;
     position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .cerrar-modal {
@@ -108,40 +214,52 @@ header h1 {
     top: 15px;
     right: 20px;
     font-size: 1.8rem;
-    color: #aaa;
+    color: #777;
     cursor: pointer;
+    transition: color 0.3s;
+}
+
+.cerrar-modal:hover {
+    color: #fff;
 }
 
 .titulo-modal {
-    color: #ff6b81;
-    margin-bottom: 1.5rem;
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
     text-align: center;
 }
 
+.glass-mini {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 .secreto-item {
-    background-color: #fff0f5;
-    border-radius: 12px;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    margin-bottom: 1.2rem;
+    padding: 1.2rem;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .secreto-item:hover {
-    background-color: #ffe4eb;
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .secreto-pregunta {
-    font-size: 1.1rem;
-    color: #4a4a4a;
+    font-size: 1.05rem;
+    color: #fff;
+    font-weight: 600;
 }
 
 .secreto-respuesta {
     display: none; 
-    margin-top: 0.8rem;
-    font-size: 0.95rem;
-    color: #666;
-    line-height: 1.4;
-    border-top: 1px dashed #ff6b81;
-    padding-top: 0.8rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.5;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+    padding-top: 1rem;
 }
