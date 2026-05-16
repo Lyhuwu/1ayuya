@@ -1,4 +1,4 @@
-// 1. FIREBASE
+// 1. CONFIGURACIÓN DE FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyD_WiArRCE8_x7il5xaKCVkrHJo9mW6DT0",
     authDomain: "calendario-sofii.firebaseapp.com",
@@ -17,7 +17,7 @@ const URL_MI_BOT_PROPIO = "https://trigger.macrodroid.com/545af313-a7e7-4ca9-8a7
 let fechaActualAlmanaque = new Date();
 let listaFechasGuardadas = []; 
 
-// 2. ELEMENTOS
+// 2. ELEMENTOS DE LA PÁGINA
 const modalCalendario = document.getElementById("modal-calendario");
 const btnCalendario = document.getElementById("btn-calendario");
 const cerrarCalendario = document.getElementById("cerrar-calendario");
@@ -39,7 +39,7 @@ window.onclick = (event) => {
     if (event.target == modalCalendario) modalCalendario.style.display = "none";
 };
 
-// Acordeón secretos
+// Acordeón de secretos
 document.querySelectorAll('.secreto-item').forEach(secreto => {
     const pregunta = secreto.querySelector('.secreto-pregunta');
     if(pregunta) {
@@ -50,7 +50,7 @@ document.querySelectorAll('.secreto-item').forEach(secreto => {
     }
 });
 
-// 3. DIBUJAR ALMANAQUE NATIVO (CON IDENTIFICADOR DE HOY)
+// 3. DIBUJAR ALMANAQUE NATIVO (MARCA EL DÍA ACTUAL Y LOS EVENTOS)
 function dibujarAlmanaque() {
     const año = fechaActualAlmanaque.getFullYear();
     const mes = fechaActualAlmanaque.getMonth();
@@ -58,7 +58,7 @@ function dibujarAlmanaque() {
     const primerDiaIndex = new Date(año, mes, 1).getDay(); 
     const totalDiasMes = new Date(año, mes + 1, 0).getDate();
 
-    // Obtener la fecha de hoy para compararla renglón por renglón
+    // Obtener el día de hoy exacto del celular
     const hoyObjeto = new Date();
     const hoyAño = hoyObjeto.getFullYear();
     const hoyMes = hoyObjeto.getMonth();
@@ -71,7 +71,7 @@ function dibujarAlmanaque() {
     for (let dia = 1; dia <= totalDiasMes; dia++) {
         const f = `${año}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
         
-        // Revisar si la celda es hoy
+        // Verifica si esta celda específica es el día de hoy
         const esHoy = (año === hoyAño && mes === hoyMes && dia === hoyDia);
         
         const claseEvento = listaFechasGuardadas.includes(f) ? "dia-con-evento" : "";
@@ -101,7 +101,7 @@ function dibujarAlmanaque() {
     });
 }
 
-// FIREBASE CARGAR
+// --- LEER EVENTOS DESDE FIREBASE ---
 function cargarFechas() {
     db.collection("fechas").get().then((querySnapshot) => {
         listaFechas.innerHTML = ""; let notas = []; listaFechasGuardadas = []; 
@@ -119,26 +119,46 @@ function cargarFechas() {
             listaFechas.appendChild(div);
         });
         dibujarAlmanaque();
-        motorVerificacionPropio(notas);
+        motorVerificacionPropio(notas); // Ejecuta el revisor de alertas
     });
 }
 
-// MOTOR ALERTAS
+// --- 🔔 MOTOR INTELIGENTE: REVISA UN DÍA ANTES Y EL MERO DÍA ---
 function motorVerificacionPropio(listaFechas) {
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy = new Date();
+    const mañana = new Date();
+    mañana.setDate(hoy.getDate() + 1);
+
+    // Formatear las fechas locales en formato YYYY-MM-DD
+    const stringHoy = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+    const stringMañana = `${mañana.getFullYear()}-${String(mañana.getMonth()+1).padStart(2,'0')}-${String(mañana.getDate()).padStart(2,'0')}`;
+
     listaFechas.forEach((item) => {
-        if (item.fecha === hoy) {
-            const msg = `¡Es hoy! 🎉 Fecha especial: ${item.descripcion}. 💕`;
-            fetch(`${URL_MI_BOT_PROPIO}?alerta_msg=${encodeURIComponent(msg)}`, { mode: 'no-cors' });
+        let mensajeAlerta = "";
+        
+        if (item.fecha === stringHoy) {
+            mensajeAlerta = `¡Es hoy! 🎉 Hoy celebramos vuestra fecha especial: ${item.descripcion}. ¡Feliz día! 💕`;
+        } else if (item.fecha === stringMañana) {
+            mensajeAlerta = `¡Recuerdo tierno! 🌹 Mañana se cumple un momento muy especial: ${item.descripcion}. ¡Que no se te pase! 🥰`;
+        }
+
+        // Si coincide con hoy o con mañana, manda el silbido al celular
+        if (mensajeAlerta !== "") {
+            fetch(`${URL_MI_BOT_PROPIO}?alerta_msg=${encodeURIComponent(mensajeAlerta)}`, { mode: 'no-cors' })
+                .then(() => console.log("Alerta enviada para el evento de la fecha: " + item.fecha))
+                .catch(err => console.error("Error al enviar señal:", err));
         }
     });
 }
 
-// GUARDAR
+// --- AGREGAR Y ELIMINAR FECHAS ---
 btnGuardarFecha.onclick = () => {
-    db.collection("fechas").add({ fecha: fechaInput.value, descripcion: descInput.value }).then(() => cargarFechas());
+    if (fechaInput.value === "" || descInput.value === "") { alert("Por favor llena ambos campos 😊"); return; }
+    db.collection("fechas").add({ fecha: fechaInput.value, descripcion: descInput.value }).then(() => {
+        fechaInput.value = ""; descInput.value = ""; cargarFechas();
+    });
 };
 
 function eliminarFecha(id) {
-    if (confirm("¿Borrar?")) db.collection("fechas").doc(id).delete().then(() => cargarFechas());
+    if (confirm("¿Borrar este recuerdo? 🥺")) { db.collection("fechas").doc(id).delete().then(() => cargarFechas()); }
 }
