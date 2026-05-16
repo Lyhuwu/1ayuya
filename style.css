@@ -6,7 +6,10 @@
 }
 
 body {
-    background-color: #050505;
+    background-image: linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.75)), url('fondo-sofi.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: #e0e0e0;
     display: flex;
     justify-content: center;
@@ -15,7 +18,6 @@ body {
     position: relative;
 }
 
-/* Solución a los pantallazos blancos: Capa de fondo fija dedicada e independiente */
 .background-aesthetic {
     position: fixed;
     top: 0;
@@ -24,13 +26,10 @@ body {
     height: 100%;
     z-index: -1; 
     pointer-events: none;
-    background-image: linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.75)), url('fondo-sofi.jpg');
-    background-size: cover;
-    background-position: center;
-    transform: translate3d(0, 0, 0); /* Fuerza aceleración por hardware */
+    opacity: 0.6; 
 }
 
-/* El pingüino asomándose perfectamente en celular */
+/* El pingüino decorativo de vuestro rincón */
 .imagen-destacada {
     position: absolute;
     top: 20px;   
@@ -42,7 +41,6 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15)); 
-    opacity: 0.6;
 }
 
 .app-container {
@@ -131,28 +129,13 @@ header {
     border: 1px solid rgba(255, 107, 129, 0.15);
 }
 
-.card-text {
-    flex-grow: 1;
-}
-
-.menu-card h2 {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 0.1rem;
-}
-
-.menu-card p {
-    font-size: 0.85rem;
-    color: #aaa;
-}
-
 .arrow {
     color: #555;
     font-size: 0.9rem;
     margin-left: 0.5rem;
 }
 
+/* Modales */
 .modal {
     display: none; 
     position: fixed;
@@ -171,7 +154,6 @@ header {
     width: 100%;
     max-width: 360px;
     border-radius: 25px;
-    /* Corregido padding lateral para que el Sábado no se salga */
     padding: 2.5rem 1rem 1.5rem 1rem; 
     position: relative;
     max-height: 85vh;
@@ -186,12 +168,9 @@ header {
     font-size: 1.8rem;
     color: #777;
     cursor: pointer;
-    transition: color 0.3s;
 }
 
-.cerrar-modal:hover {
-    color: #fff;
-}
+.cerrar-modal:hover { color: #fff; }
 
 .titulo-modal {
     font-size: 2.8rem;
@@ -208,9 +187,9 @@ header {
     transition: background-color 0.5s ease, border-color 0.5s ease;
 }
 
-/* Efecto de parpadeo/foco cuando saltas a una fecha */
+/* Efecto Destello Rosa cuando le picas al día del evento */
 .tarjeta-enfocada {
-    background: rgba(255, 107, 129, 0.15) !important;
+    background: rgba(255, 107, 129, 0.18) !important;
     border-color: rgba(255, 107, 129, 0.5) !important;
     box-shadow: 0 0 15px rgba(255, 107, 129, 0.3);
 }
@@ -236,7 +215,7 @@ header {
     padding-top: 1rem;
 }
 
-/* --- ESTILOS DEL CALENDARIO --- */
+/* Formulario Calendario */
 .form-calendario {
     display: flex;
     flex-direction: column;
@@ -254,11 +233,6 @@ header {
     color: #fff;
     font-size: 1rem;
     outline: none;
-    font-family: 'Quicksand', sans-serif;
-}
-
-.input-glass::placeholder {
-    color: #999;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -278,32 +252,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transition: 0.3s;
 }
 
-.btn-glass:hover {
-    background: rgba(255, 107, 129, 0.3);
-}
+.btn-glass:hover { background: rgba(255, 107, 129, 0.3); }
 
-.fecha-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.fecha-item strong {
-    color: #ff6b81; 
-    font-size: 1.1rem;
-    margin-bottom: 5px;
-}
-
-.fecha-item p {
-    color: #e0e0e0;
-    font-size: 0.95rem;
-}
-
-.fecha-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-}
+.fecha-item { display: flex; flex-direction: column; }
+.fecha-item strong { color: #ff6b81; font-size: 1.1rem; margin-bottom: 5px; }
+.fecha-item p { color: #e0e0e0; font-size: 0.95rem; }
+.fecha-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
 
 .btn-eliminar {
     background: none;
@@ -312,90 +266,44 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
     font-size: 0.95rem;
     padding: 5px;
-    transition: 0.2s;
 }
+.btn-eliminar:hover { color: #ff4757; transform: scale(1.1); }
 
-.btn-eliminar:hover {
-    color: #ff4757; 
-    transform: scale(1.1);
-}
-
-/* --- DISEÑO DEL ALMANAQUE NATIVO RE-AJUSTADO --- */
+/* --- DISEÑO SIMÉTRICO DEL ALMANAQUE --- */
 #almanaque-visual {
     margin-bottom: 25px;
-    padding: 12px 8px; /* Ajuste fino de padding para evitar desborde */
+    padding: 12px 8px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.02);
     border-radius: 15px;
 }
 
-.almanaque-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    color: #fff;
-    font-weight: bold;
-}
+.almanaque-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #fff; font-weight: bold; }
+.almanaque-header button { background: none; border: none; color: #ff6b81; font-size: 1.2rem; cursor: pointer; padding: 5px 10px; }
+.almanaque-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #ff6b81; font-size: 0.8rem; margin-bottom: 10px; }
+.almanaque-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
 
-.almanaque-header button {
-    background: none;
-    border: none;
-    color: #ff6b81;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 5px 10px;
-}
-
-.almanaque-semana {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    font-weight: bold;
-    color: #ff6b81;
-    font-size: 0.8rem;
-    margin-bottom: 10px;
-}
-
-.almanaque-dias {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px; /* Reducido levemente para que quepa perfecto el Sábado */
-    text-align: center;
-}
-
+/* Celdas perfectamente circulares */
 .dia-celda {
     color: #ccc;
     padding: 6px 0;
     font-size: 0.88rem;
     border-radius: 50%;
     cursor: pointer;
-    transition: 0.2s;
     display: flex;
     justify-content: center;
     align-items: center;
     aspect-ratio: 1;
 }
+.dia-celda:hover { background: rgba(255, 255, 255, 0.1); }
+.dia-vacio { cursor: default; opacity: 0; }
 
-.dia-celda:hover {
-    background: rgba(255, 255, 255, 0.1);
+/* El círculo rosa hermoso para las fechas guardadas */
+.dia-con-evento { 
+    background: rgba(255, 107, 129, 0.25) !important; 
+    color: #ff6b81 !important; 
+    font-weight: bold; 
+    border: 1px solid rgba(255, 107, 129, 0.5); 
+    box-shadow: 0 0 8px rgba(255, 107, 129, 0.3); 
 }
-
-.dia-vacio {
-    cursor: default;
-    opacity: 0;
-}
-
-.dia-con-evento {
-    background: rgba(255, 107, 129, 0.25) !important;
-    color: #ff6b81 !important;
-    font-weight: bold;
-    border: 1px solid rgba(255, 107, 129, 0.5);
-    box-shadow: 0 0 8px rgba(255, 107, 129, 0.3);
-}
-
-.dia-seleccionado {
-    background: #ff6b81 !important;
-    color: #fff !important;
-    box-shadow: 0 0 12px rgba(255, 107, 129, 0.6);
-}
+.dia-seleccionado { background: #ff6b81 !important; color: #fff !important; box-shadow: 0 0 12px rgba(255, 107, 129, 0.6); }
