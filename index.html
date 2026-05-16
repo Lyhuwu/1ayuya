@@ -3,69 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestro Espacio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Para Sofi | Nuestro Rincón</title>
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div class="background-aesthetic">
+        <div class="monkey"></div>
+        <div class="flores"></div>
+    </div>
+
     <div class="app-container">
         <header>
-            <h1>Para Sofi 💖</h1>
+            <h1 class="titulo-elegante">Para Sofi <span class="corazon">💖</span></h1>
             <p class="subtitulo">Nuestro rincón privado</p>
         </header>
 
         <main class="menu-grid">
-            <a href="#" class="menu-card" target="_blank">
-                <div class="icon">💌</div>
-                <h2>Tus Cartitas</h2>
-                <p>Todo lo que te he escrito</p>
+            <a href="#" class="menu-card glass" target="_blank">
+                <div class="icon-container">
+                    <i class="fas fa-envelope-open-heart"></i>
+                </div>
+                <div class="card-text">
+                    <h2>Tus Cartitas</h2>
+                    <p>Todo lo que te he escrito</p>
+                </div>
+                <i class="fas fa-chevron-right arrow"></i>
             </a>
 
-            <a href="#" class="menu-card" target="_blank">
-                <div class="icon">🎧</div>
-                <h2>Nuestra Playlist</h2>
-                <p>Para escuchar juntos</p>
+            <a href="#" class="menu-card glass" target="_blank">
+                <div class="icon-container">
+                    <i class="fas fa-headphones-alt"></i>
+                </div>
+                <div class="card-text">
+                    <h2>Nuestra Playlist</h2>
+                    <p>Para escuchar juntos</p>
+                </div>
+                <i class="fas fa-chevron-right arrow"></i>
             </a>
 
-            <div class="menu-card" id="btn-curiosidades">
-                <div class="icon">✨</div>
-                <h2>Detrás de las Cartitas</h2>
-                <p>Secretos que no sabías</p>
+            <div class="menu-card glass" id="btn-curiosidades">
+                <div class="icon-container">
+                    <i class="fas fa-sparkles"></i>
+                </div>
+                <div class="card-text">
+                    <h2>Detrás de las Cartitas</h2>
+                    <p>Secretos que no sabías</p>
+                </div>
+                <i class="fas fa-chevron-right arrow"></i>
             </div>
 
-            <div class="menu-card" id="btn-calendario">
-                <div class="icon">📅</div>
-                <h2>Calendario</h2>
-                <p>Nuestras fechas importantes</p>
+            <div class="menu-card glass" id="btn-calendario">
+                <div class="icon-container">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="card-text">
+                    <h2>Calendario</h2>
+                    <p>Nuestras fechas importantes</p>
+                </div>
+                <i class="fas fa-chevron-right arrow"></i>
             </div>
         </main>
+
+        <div class="collage-inferior">
+            <div class="foto-pareja glass"></div>
+        </div>
     </div>
 
     <div id="modal-curiosidades" class="modal">
-        <div class="modal-content">
+        <div class="modal-content glass">
             <span class="cerrar-modal">&times;</span>
-            <h2 class="titulo-modal">Secretos Revelados 🤫</h2>
+            <h2 class="titulo-modal titulo-elegante">Secretos Revelados 🤫</h2>
             
             <div class="lista-secretos">
-                <div class="secreto-item">
+                <div class="secreto-item glass-mini">
                     <h3 class="secreto-pregunta">🌹 Sobre "La Vie en Rose"</h3>
                     <p class="secreto-respuesta">La escuché por primera vez en una serie... y deseé con mucha emoción poder dedicársela algún día a la persona correcta. Y esa eres tú.</p>
                 </div>
                 
-                <div class="secreto-item">
+                <div class="secreto-item glass-mini">
                     <h3 class="secreto-pregunta">🧸 El apodo "monkeyspaidi"</h3>
                     <p class="secreto-respuesta">Siempre me hace sonreír cuando pienso en este apodo y en lo especial que te has vuelto para mí desde que empezamos a usarlo.</p>
                 </div>
 
-                <div class="secreto-item">
+                <div class="secreto-item glass-mini">
                     <h3 class="secreto-pregunta">🗓️ Felices 7 meses</h3>
                     <p class="secreto-respuesta">Llegar a este séptimo mes juntos en mayo ha sido increíble. Quería dejarte este espacio guardado para que siempre recuerdes lo mucho que me importas.</p>
-                </div>
-
-                <div class="secreto-item">
-                    <h3 class="secreto-pregunta">🌌 La Galaxia de San Valentín</h3>
-                    <p class="secreto-respuesta">¿Recuerdas la galaxia 3D que te hice en febrero? Este nuevo rincón es para seguir sumando detalles a nuestra historia digital, igual que esa vez.</p>
                 </div>
             </div>
         </div>
