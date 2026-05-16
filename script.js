@@ -11,7 +11,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Variables globales para el almanaque nativo
 let fechaActualAlmanaque = new Date();
 let listaFechasGuardadas = []; 
 
@@ -36,7 +35,7 @@ cerrarCuriosidades.onclick = () => modalCuriosidades.style.display = "none";
 
 btnCalendario.onclick = () => {
     modalCalendario.style.display = "flex";
-    cargarFechas(); // Carga las fechas de Firebase y dibuja la cuadrícula al instante
+    cargarFechas(); 
 };
 cerrarCalendario.onclick = () => modalCalendario.style.display = "none";
 
@@ -56,7 +55,7 @@ secretos.forEach(secreto => {
     }
 });
 
-// 4. FUNCIONES DE FABRICACIÓN DEL ALMANAQUE NATIVO
+// 4. FUNCIONES DEL ALMANAQUE NATIVO
 function dibujarAlmanaque() {
     const año = fechaActualAlmanaque.getFullYear();
     const mes = fechaActualAlmanaque.getMonth();
@@ -96,7 +95,7 @@ function dibujarAlmanaque() {
     html += `</div>`;
     contenedorAlmanaque.innerHTML = html;
 
-    // Cambiar de mes
+    // Navegación de meses
     document.getElementById("ant-mes").onclick = () => {
         fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() - 1);
         dibujarAlmanaque();
@@ -106,13 +105,29 @@ function dibujarAlmanaque() {
         dibujarAlmanaque();
     };
 
-    // Selección de celdas
+    // Selección e interactividad al hacer click en los días
     const celdas = contenedorAlmanaque.querySelectorAll('.dia-celda:not(.dia-vacio)');
     celdas.forEach(celda => {
         celda.onclick = () => {
             celdas.forEach(c => c.classList.remove('dia-seleccionado'));
             celda.classList.add('dia-seleccionado');
-            fechaInput.value = celda.getAttribute('data-fecha');
+            
+            const fechaSeleccionada = celda.getAttribute('data-fecha');
+            fechaInput.value = fechaSeleccionada;
+
+            // NUEVO: Si tiene evento, desplaza suavemente hasta la tarjeta correspondiente
+            if (celda.classList.contains('dia-con-evento')) {
+                const tarjetaObjetivo = document.getElementById(`tarjeta-${fechaSeleccionada}`);
+                if (tarjetaObjetivo) {
+                    tarjetaObjetivo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Efecto de parpadeo visual
+                    tarjetaObjetivo.classList.add('tarjeta-enfocada');
+                    setTimeout(() => {
+                        tarjetaObjetivo.classList.remove('tarjeta-enfocada');
+                    }, 1500);
+                }
+            }
         };
     });
 }
@@ -134,19 +149,16 @@ function cargarFechas() {
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            notes_item = {
+            notas.push({
                 id: doc.id,
                 fecha: data.fecha,
                 descripcion: data.descripcion
-            };
-            notas.push(notes_item);
+            });
             listaFechasGuardadas.push(data.fecha); 
         });
 
-        // Orden cronológico
         notas.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
-        // Desplegar las tarjetas abajo
         notas.forEach((nota) => {
             const fechaObj = new Date(nota.fecha + 'T00:00:00'); 
             const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -154,6 +166,8 @@ function cargarFechas() {
 
             const div = document.createElement("div");
             div.className = "secreto-item glass-mini fecha-item";
+            /* NUEVO: Le asignamos un ID único usando la fecha para poder enlazar el scroll */
+            div.id = `tarjeta-${nota.fecha}`; 
             div.innerHTML = `
                 <div class="fecha-header">
                     <strong>${fechaBonita}</strong>
@@ -167,7 +181,6 @@ function cargarFechas() {
             listaFechas.appendChild(div);
         });
 
-        // Redibuja el almanaque con las luces rosas cargadas
         dibujarAlmanaque();
 
     }).catch((error) => {
