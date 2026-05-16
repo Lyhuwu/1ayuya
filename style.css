@@ -6,9 +6,9 @@
 }
 
 html {
-    background-color: #111111; /* Matamos el fondo blanco por defecto */
-    overscroll-behavior-y: none; /* Evita el rebote al hacer scroll */
-    -webkit-tap-highlight-color: transparent; /* Quita los parpadeos al tocar la pantalla */
+    background-color: #111111; 
+    overscroll-behavior-y: none; 
+    -webkit-tap-highlight-color: transparent; 
 }
 
 body {
@@ -21,7 +21,6 @@ body {
     background-color: #111111;
 }
 
-/* Truco maestro: el fondo en una capa estática para que no haya destellos */
 body::before {
     content: "";
     position: fixed;
@@ -213,8 +212,14 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 .almanaque-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; color: #ff6b81; font-size: 0.8rem; margin-bottom: 10px; }
 .almanaque-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
 
-.dia-celda { color: #eee; padding: 6px 0; font-size: 0.88rem; border-radius: 50%; cursor: pointer; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+.dia-celda { color: #eee; padding: 6px 0; font-size: 0.88rem; border-radius: 50%; cursor: pointer; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; position: relative; }
 .dia-vacio { opacity: 0; }
+
+/* 🌟 DÍA ACTUAL: Anillo interior blanco elegante */
+.dia-actual {
+    font-weight: 700 !important;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7) !important;
+}
 
 .dia-con-evento { 
     background: rgba(255, 107, 129, 0.3) !important; 
@@ -223,4 +228,4 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
     border: 1px solid rgba(255, 107, 129, 0.6); 
     box-shadow: 0 0 8px rgba(255, 107, 129, 0.4); 
 }
-.dia-seleccionado { background: #ff6b81 !important; color: #fff !important; }
+.dia-seleccionado { background: #ff6b81 !important; color: #fff !important; box-shadow: 0 0 12px rgba(255, 107, 129, 0.6) !important; }
