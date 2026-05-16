@@ -8,12 +8,12 @@ const firebaseConfig = {
     appId: "1:510593512305:web:4bd38144068d757beafcd0"
 };
 
-// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Variable global del calendario
-let calendarioVisual = null;
+// Variables globales para el almanaque nativo
+let fechaActualAlmanaque = new Date();
+let listaFechasGuardadas = []; 
 
 // 2. ELEMENTOS DE LA PÁGINA
 const modalCuriosidades = document.getElementById("modal-curiosidades");
@@ -28,20 +28,16 @@ const btnGuardarFecha = document.getElementById("btn-guardar-fecha");
 const fechaInput = document.getElementById("fecha-input");
 const descInput = document.getElementById("desc-input");
 const listaFechas = document.getElementById("lista-fechas");
+const contenedorAlmanaque = document.getElementById("almanaque-visual");
 
-// 3. ABRIR Y CERRAR VENTANAS FLOTANTES
+// 3. VENTANAS FLOTANTES
 btnCuriosidades.onclick = () => modalCuriosidades.style.display = "flex";
 cerrarCuriosidades.onclick = () => modalCuriosidades.style.display = "none";
 
 btnCalendario.onclick = () => {
     modalCalendario.style.display = "flex";
-    // Forzamos un pequeño retraso de milisegundos para que el contenedor HTML ya exista visualmente antes de dibujar el almanaque
-    setTimeout(() => {
-        inicializarAlmanaque();
-        cargarFechas();
-    }, 100);
+    cargarFechas(); // Carga las fechas de Firebase y dibuja la cuadrícula al instante
 };
-
 cerrarCalendario.onclick = () => modalCalendario.style.display = "none";
 
 window.onclick = (event) => {
@@ -60,36 +56,125 @@ secretos.forEach(secreto => {
     }
 });
 
-// 4. CONFIGURACIÓN DEL ALMANAQUE VISUAL
-function inicializarAlmanaque(fechasResaltadas = []) {
-    if (calendarioVisual) {
-        calendarioVisual.destroy();
+// 4. FUNCIONES DE FABRICACIÓN DEL ALMANAQUE NATIVO
+function dibujarAlmanaque() {
+    const año = fechaActualAlmanaque.getFullYear();
+    const mes = fechaActualAlmanaque.getMonth();
+
+    const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    
+    const primerDiaIndex = new Date(año, mes, 1).getDay(); 
+    const totalDiasMes = new Date(año, mes + 1, 0).getDate();
+
+    let html = `
+        <div class="almanaque-header">
+            <button id="ant-mes"><i class="fas fa-chevron-left"></i></button>
+            <span>${nombresMeses[mes]} ${año}</span>
+            <button id="sig-mes"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="almanaque-semana">
+            <div>Do</div><div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sá</div>
+        </div>
+        <div class="almanaque-dias">
+    `;
+
+    for (let i = 0; i < primerDiaIndex; i++) {
+        html += `<div class="dia-celda dia-vacio"></div>`;
     }
 
-    calendarioVisual = new VanillaCalendar('#almanaque-visual', {
-        settings: {
-            lang: 'es-ES',
-            iso8601: false,
-            selection: {
-                day: 'single',
-            },
-            selected: {
-                dates: fechasResaltadas // Aquí se inyectan los días con puntitos
-            }
-        },
-        actions: {
-            clickDay(event, self) {
-                if (self.selectedDates.length > 0) {
-                    fechaInput.value = self.selectedDates[0];
-                }
-            }
-        }
-    });
+    for (let dia = 1; dia <= totalDiasMes; dia++) {
+        const mesFormateado = String(mes + 1).padStart(2, '0');
+        const diaFormateado = String(dia).padStart(2, '0');
+        const stringFechaCelda = `${año}-${mesFormateado}-${diaFormateado}`;
 
-    calendarioVisual.init();
+        const tieneEvento = listaFechasGuardadas.includes(stringFechaCelda);
+        const claseEvento = tieneEvento ? "dia-con-evento" : "";
+
+        html += `<div class="dia-celda ${claseEvento}" data-fecha="${stringFechaCelda}">${dia}</div>`;
+    }
+
+    html += `</div>`;
+    contenedorAlmanaque.innerHTML = html;
+
+    // Cambiar de mes
+    document.getElementById("ant-mes").onclick = () => {
+        fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() - 1);
+        dibujarAlmanaque();
+    };
+    document.getElementById("sig-mes").onclick = () => {
+        fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() + 1);
+        dibujarAlmanaque();
+    };
+
+    // Selección de celdas
+    const celdas = contenedorAlmanaque.querySelectorAll('.dia-celda:not(.dia-vacio)');
+    celdas.forEach(celda => {
+        celda.onclick = () => {
+            celdas.forEach(c => c.classList.remove('dia-seleccionado'));
+            celda.classList.add('dia-seleccionado');
+            fechaInput.value = celda.getAttribute('data-fecha');
+        };
+    });
 }
 
-// 5. FUNCIONES DEL CALENDARIO (FIREBASE)
+// --- LEER Y DESPLEGAR EVENTOS (FIREBASE) ---
+function cargarFechas() {
+    listaFechas.innerHTML = "<p style='text-align:center; color:#999; margin-top: 10px;'>Buscando recuerdos...</p>";
+    
+    db.collection("fechas").get().then((querySnapshot) => {
+        listaFechas.innerHTML = ""; 
+        let notas = [];
+        listaFechasGuardadas = []; 
+        
+        if (querySnapshot.empty) {
+            listaFechas.innerHTML = "<p style='text-align:center; color:#999; margin-top: 10px;'>Aún no hay fechas guardadas. ¡Añade la primera!</p>";
+            dibujarAlmanaque(); 
+            return;
+        }
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            notes_item = {
+                id: doc.id,
+                fecha: data.fecha,
+                descripcion: data.descripcion
+            };
+            notas.push(notes_item);
+            listaFechasGuardadas.push(data.fecha); 
+        });
+
+        // Orden cronológico
+        notas.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+        // Desplegar las tarjetas abajo
+        notas.forEach((nota) => {
+            const fechaObj = new Date(nota.fecha + 'T00:00:00'); 
+            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+            const fechaBonita = fechaObj.toLocaleDateString('es-ES', opciones);
+
+            const div = document.createElement("div");
+            div.className = "secreto-item glass-mini fecha-item";
+            div.innerHTML = `
+                <div class="fecha-header">
+                    <strong>${fechaBonita}</strong>
+                    <button class="btn-eliminar" onclick="eliminarFecha('${nota.id}')" title="Eliminar recuerdo">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                <p id="desc-${nota.id}" ondblclick="editarFecha('${nota.id}', '${nota.descripcion}')" title="Doble clic para editar">${nota.descripcion}</p>
+                <small style="color: #666; font-size: 0.75rem; margin-top: 5px; display: block;">💡 Doble clic en el texto para editar</small>
+            `;
+            listaFechas.appendChild(div);
+        });
+
+        // Redibuja el almanaque con las luces rosas cargadas
+        dibujarAlmanaque();
+
+    }).catch((error) => {
+        console.error("Error al cargar:", error);
+        listaFechas.innerHTML = "<p style='text-align:center; color:#ff6b81;'>Error al conectar con la base de datos.</p>";
+    });
+}
 
 // --- GUARDAR EVENTO ---
 btnGuardarFecha.onclick = () => {
@@ -118,66 +203,6 @@ btnGuardarFecha.onclick = () => {
     });
 };
 
-// --- LEER Y DESPLEGAR EVENTOS ---
-function cargarFechas() {
-    listaFechas.innerHTML = "<p style='text-align:center; color:#999; margin-top: 10px;'>Buscando recuerdos...</p>";
-    
-    // Simplificamos la consulta para evitar que se congele si Firebase no tiene índices creados
-    db.collection("fechas").get().then((querySnapshot) => {
-        listaFechas.innerHTML = ""; 
-        let notas = [];
-        let fechasConEventos = [];
-        
-        if (querySnapshot.empty) {
-            listaFechas.innerHTML = "<p style='text-align:center; color:#999; margin-top: 10px;'>Aún no hay fechas guardadas. ¡Añade la primera!</p>";
-            inicializarAlmanaque([]); // Inicializa vacío
-            return;
-        }
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            notas.push({
-                id: doc.id,
-                fecha: data.fecha,
-                descripcion: data.descripcion
-            });
-            // Guardamos la fecha para el almanaque
-            fechasConEventos.push(data.fecha);
-        });
-
-        // Ordenamos las fechas manualmente en JavaScript para que no falle Firebase
-        notas.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
-        // Pintamos los eventos en la lista inferior
-        notas.forEach((nota) => {
-            const fechaObj = new Date(nota.fecha + 'T00:00:00'); 
-            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
-            const fechaBonita = fechaObj.toLocaleDateString('es-ES', opciones);
-
-            const div = document.createElement("div");
-            div.className = "secreto-item glass-mini fecha-item";
-            div.innerHTML = `
-                <div class="fecha-header">
-                    <strong>${fechaBonita}</strong>
-                    <button class="btn-eliminar" onclick="eliminarFecha('${nota.id}')" title="Eliminar recuerdo">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-                <p id="desc-${nota.id}" ondblclick="editarFecha('${nota.id}', '${nota.descripcion}')" title="Doble clic para editar">${nota.descripcion}</p>
-                <small style="color: #666; font-size: 0.75rem; margin-top: 5px; display: block;">💡 Doble clic en el texto para editar</small>
-            `;
-            listaFechas.appendChild(div);
-        });
-
-        // Actualizamos el almanaque de arriba con los días marcados
-        inicializarAlmanaque(fechasConEventos);
-
-    }).catch((error) => {
-        console.error("Error al cargar:", error);
-        listaFechas.innerHTML = "<p style='text-align:center; color:#ff6b81;'>Error al conectar con la base de datos.</p>";
-    });
-}
-
 // --- ELIMINAR EVENTO ---
 function eliminarFecha(id) {
     if (confirm("¿Estás seguro de que quieres borrar este recuerdo? 🥺")) {
@@ -185,23 +210,18 @@ function eliminarFecha(id) {
             cargarFechas(); 
         }).catch((error) => {
             alert("No se pudo borrar, intenta de nuevo.");
-            console.error("Error al borrar: ", error);
         });
     }
 }
 
-// --- EDITAR EVENTO ---
+// --- EDITAR EVENTO (DOBLE CLIC) ---
 function editarFecha(id, descripcionActual) {
     const nuevoTexto = prompt("Edita tu recuerdo o plan:", descripcionActual);
-    
     if (nuevoTexto === null || nuevoTexto.trim() === "") return;
 
     db.collection("fechas").doc(id).update({
         descripcion: nuevoTexto
     }).then(() => {
         cargarFechas(); 
-    }).catch((error) => {
-        alert("No se pudo actualizar el texto.");
-        console.error("Error al editar: ", error);
     });
 }
