@@ -208,3 +208,11 @@ function editarFecha(id, descripcionActual) {
     if (nuevoTexto === null || nuevoTexto.trim() === "") return;
     db.collection("fechas").doc(id).update({ descripcion: nuevoTexto }).then(() => cargarFechas());
 }
+// Función para mandar a Sofi a activar su WhatsApp Business
+document.getElementById("btn-activar-wa").onclick = () => {
+    // ⚠️ PON TU NÚMERO EXTRA AQUÍ (Mantén el formato de puros números sin el signo +)
+    const numeroBusiness = "527341234567"; 
+    const textoMágico = encodeURIComponent("¡Hola! Quiero activar las alertas de nuestro rincón privado 💖");
+    
+    window.open(`https://wa.me/${numeroBusiness}?text=${textoMágico}`, '_blank');
+};
