@@ -26,7 +26,6 @@ body {
     opacity: 0.6; 
 }
 
-/* Optimizado para que el pingüino se vea perfecto en la pantalla del celular */
 .imagen-destacada {
     position: absolute;
     top: 20px;   
@@ -41,7 +40,6 @@ body {
     opacity: 0.9;
 }
 
-/* Ocultado temporalmente para limpiar el fondo de enlaces rotos */
 .flores {
     display: none; 
 }
@@ -308,7 +306,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 0.95rem;
 }
 
-/* --- BOTÓN DE ELIMINAR EVENTOS --- */
 .fecha-header {
     display: flex;
     justify-content: space-between;
@@ -329,4 +326,54 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .btn-eliminar:hover {
     color: #ff4757; 
     transform: scale(1.1);
+}
+
+/* NUEVO: ESTILOS PERSONALIZADOS DEL ALMANAQUE EN MÓVIL */
+#almanaque-visual {
+    margin-bottom: 25px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Modificamos las clases internas de Vanilla Calendar para adaptarlo a nuestra noche de cristal */
+.vc-calendar {
+    background: transparent !important;
+    border: none !important;
+    font-family: 'Quicksand', sans-serif !important;
+}
+
+.vc-header__title, .vc-weekday {
+    color: #fff !important;
+}
+
+.vc-weekday {
+    font-weight: bold !important;
+}
+
+.vc-day__btn {
+    color: #ccc !important;
+    border-radius: 50% !important;
+    transition: 0.2s !important;
+}
+
+.vc-day__btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Estilo para los días que tienen eventos marcados en Firebase */
+.vc-day__btn_has-event {
+    background: rgba(255, 107, 129, 0.2) !important;
+    color: #ff6b81 !important;
+    border: 1px solid rgba(255, 107, 129, 0.4) !important;
+    font-weight: bold !important;
+}
+
+.vc-day__btn_selected {
+    background: #ff6b81 !important;
+    color: #fff !important;
+    box-shadow: 0 0 10px rgba(255, 107, 129, 0.5) !important;
+}
+
+.vc-arrow {
+    fill: #fff !important;
 }
