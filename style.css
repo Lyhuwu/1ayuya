@@ -6,7 +6,13 @@
 }
 
 body {
-    background-color: #050505; 
+    /* Aquí pones el nombre de tu foto de fondo */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('fondo-sofi.jpg');
+    
+    background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+    background-position: center; /* Centra la imagen */
+    background-attachment: fixed; /* ¡Esto la hace estática! No se moverá aunque deslices hacia abajo */
+    
     color: #e0e0e0;
     display: flex;
     justify-content: center;
