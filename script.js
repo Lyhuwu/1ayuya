@@ -13,7 +13,7 @@ spanCerrar.onclick = function() {
     modal.style.display = "none";
 }
 
-// Cerrar si se toca fuera del cuadro
+// Cerrar si se toca fuera del cuadro blanco
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
