@@ -12,6 +12,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// Variable global para controlar el almanaque visual
+let calendarioVisual = null;
+
 // 2. ELEMENTOS DE LA PÁGINA
 const modalCuriosidades = document.getElementById("modal-curiosidades");
 const btnCuriosidades = document.getElementById("btn-curiosidades");
@@ -32,7 +35,8 @@ cerrarCuriosidades.onclick = () => modalCuriosidades.style.display = "none";
 
 btnCalendario.onclick = () => {
     modalCalendario.style.display = "flex";
-    cargarFechas(); 
+    inicializarAlmanaque(); // Crea el almanaque visual
+    cargarFechas();        // Descarga y pinta las fechas de Firebase
 };
 cerrarCalendario.onclick = () => modalCalendario.style.display = "none";
 
@@ -52,7 +56,36 @@ secretos.forEach(secreto => {
     }
 });
 
-// 4. FUNCIONES DEL CALENDARIO (FIREBASE)
+// 4. NUEVO: CONFIGURACIÓN DEL ALMANAQUE VISUAL
+function inicializarAlmanaque() {
+    // Si ya existe uno creado previamente, lo destruimos para no duplicarlo
+    if (calendarioVisual) {
+        calendarioVisual.destroy();
+    }
+
+    // Configuramos el calendario interactivo en español
+    calendarioVisual = new VanillaCalendar('#almanaque-visual', {
+        settings: {
+            lang: 'es-ES',
+            iso8601: false,
+            selection: {
+                day: 'single',
+            }
+        },
+        actions: {
+            // Cuando hacen clic en un día del almanaque, se rellena automáticamente el formulario de abajo
+            clickDay(event, self) {
+                if (self.selectedDates.length > 0) {
+                    fechaInput.value = self.selectedDates[0];
+                }
+            }
+        }
+    });
+
+    calendarioVisual.init();
+}
+
+// 5. FUNCIONES DEL CALENDARIO (FIREBASE)
 
 // --- GUARDAR O CREAR UN EVENTO ---
 btnGuardarFecha.onclick = () => {
@@ -87,6 +120,7 @@ function cargarFechas() {
     
     db.collection("fechas").orderBy("fecha", "asc").get().then((querySnapshot) => {
         listaFechas.innerHTML = ""; 
+        const fechasConEventos = []; // Array para guardar qué días tienen recuerdos
         
         if (querySnapshot.empty) {
             listaFechas.innerHTML = "<p style='text-align:center; color:#999; margin-top: 10px;'>Aún no hay fechas guardadas. ¡Añade la primera!</p>";
@@ -97,6 +131,9 @@ function cargarFechas() {
             const data = doc.data();
             const idDoc = doc.id; 
             
+            // Añadimos la fecha a la lista para iluminarla en el almanaque
+            fechasConEventos.push(data.fecha);
+
             const fechaObj = new Date(data.fecha + 'T00:00:00'); 
             const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
             const fechaBonita = fechaObj.toLocaleDateString('es-ES', opciones);
@@ -115,6 +152,12 @@ function cargarFechas() {
             `;
             listaFechas.appendChild(div);
         });
+
+        // Hacemos que el almanaque visual resalte y dibuje puntitos en los días que tienen sorpresas guardadas
+        if (calendarioVisual) {
+            calendarioVisual.settings.selected.dates = fechasConEventos;
+            calendarioVisual.update();
+        }
     });
 }
 
