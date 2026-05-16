@@ -6,7 +6,12 @@
 }
 
 body {
-    background-color: #050505; 
+    /* Corregido: Usa tu fondo original fondo-sofi.jpg con capa de legibilidad */
+    background-image: linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.75)), url('fondo-sofi.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Mantiene tu fondo fijo al hacer scroll */
+    
     color: #e0e0e0;
     display: flex;
     justify-content: center;
@@ -26,6 +31,7 @@ body {
     opacity: 0.6; 
 }
 
+/* El pingüino asomándose perfectamente en celular */
 .imagen-destacada {
     position: absolute;
     top: 20px;   
@@ -95,7 +101,7 @@ header {
     -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.08); 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
 }
 
 .menu-card {
@@ -328,52 +334,84 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transform: scale(1.1);
 }
 
-/* NUEVO: ESTILOS PERSONALIZADOS DEL ALMANAQUE EN MÓVIL */
+/* --- DISEÑO DEL ALMANAQUE NATIVO --- */
 #almanaque-visual {
     margin-bottom: 25px;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 15px;
 }
 
-/* Modificamos las clases internas de Vanilla Calendar para adaptarlo a nuestra noche de cristal */
-.vc-calendar {
-    background: transparent !important;
-    border: none !important;
-    font-family: 'Quicksand', sans-serif !important;
+.almanaque-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #fff;
+    font-weight: bold;
 }
 
-.vc-header__title, .vc-weekday {
-    color: #fff !important;
+.almanaque-header button {
+    background: none;
+    border: none;
+    color: #ff6b81;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px 10px;
 }
 
-.vc-weekday {
-    font-weight: bold !important;
+.almanaque-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    color: #ff6b81;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
 }
 
-.vc-day__btn {
-    color: #ccc !important;
-    border-radius: 50% !important;
-    transition: 0.2s !important;
+.almanaque-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
 }
 
-.vc-day__btn:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
+.dia-celda {
+    color: #ccc;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1;
 }
 
-/* Estilo para los días que tienen eventos marcados en Firebase */
-.vc-day__btn_has-event {
-    background: rgba(255, 107, 129, 0.2) !important;
+.dia-celda:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dia-vacio {
+    cursor: default;
+    opacity: 0;
+}
+
+/* Días resaltados en rosa porque tienen recuerdos en Firebase */
+.dia-con-evento {
+    background: rgba(255, 107, 129, 0.25) !important;
     color: #ff6b81 !important;
-    border: 1px solid rgba(255, 107, 129, 0.4) !important;
-    font-weight: bold !important;
+    font-weight: bold;
+    border: 1px solid rgba(255, 107, 129, 0.5);
+    box-shadow: 0 0 8px rgba(255, 107, 129, 0.3);
 }
 
-.vc-day__btn_selected {
+/* Día seleccionado */
+.dia-seleccionado {
     background: #ff6b81 !important;
     color: #fff !important;
-    box-shadow: 0 0 10px rgba(255, 107, 129, 0.5) !important;
-}
-
-.vc-arrow {
-    fill: #fff !important;
+    box-shadow: 0 0 12px rgba(255, 107, 129, 0.6);
 }
