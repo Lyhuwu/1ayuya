@@ -6,12 +6,7 @@
 }
 
 body {
-    /* Corregido: Usa tu fondo original fondo-sofi.jpg con capa de legibilidad */
-    background-image: linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.75)), url('fondo-sofi.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Mantiene tu fondo fijo al hacer scroll */
-    
+    background-color: #050505;
     color: #e0e0e0;
     display: flex;
     justify-content: center;
@@ -20,15 +15,19 @@ body {
     position: relative;
 }
 
+/* Solución a los pantallazos blancos: Capa de fondo fija dedicada e independiente */
 .background-aesthetic {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0; 
+    z-index: -1; 
     pointer-events: none;
-    opacity: 0.6; 
+    background-image: linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.75)), url('fondo-sofi.jpg');
+    background-size: cover;
+    background-position: center;
+    transform: translate3d(0, 0, 0); /* Fuerza aceleración por hardware */
 }
 
 /* El pingüino asomándose perfectamente en celular */
@@ -43,15 +42,7 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15)); 
-    opacity: 0.9;
-}
-
-.flores {
-    display: none; 
-}
-
-.foto-pareja {
-    display: none; 
+    opacity: 0.6;
 }
 
 .app-container {
@@ -162,12 +153,6 @@ header {
     margin-left: 0.5rem;
 }
 
-.collage-inferior {
-    margin-top: 3rem;
-    display: flex;
-    justify-content: center;
-}
-
 .modal {
     display: none; 
     position: fixed;
@@ -176,17 +161,18 @@ header {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.75);
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: 0.8rem;
 }
 
 .modal-content {
     width: 100%;
     max-width: 360px;
     border-radius: 25px;
-    padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+    /* Corregido padding lateral para que el Sábado no se salga */
+    padding: 2.5rem 1rem 1.5rem 1rem; 
     position: relative;
     max-height: 85vh;
     overflow-y: auto; 
@@ -195,8 +181,8 @@ header {
 
 .cerrar-modal {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 10px;
+    right: 15px;
     font-size: 1.8rem;
     color: #777;
     cursor: pointer;
@@ -219,17 +205,19 @@ header {
     -webkit-backdrop-filter: blur(5px);
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+
+/* Efecto de parpadeo/foco cuando saltas a una fecha */
+.tarjeta-enfocada {
+    background: rgba(255, 107, 129, 0.15) !important;
+    border-color: rgba(255, 107, 129, 0.5) !important;
+    box-shadow: 0 0 15px rgba(255, 107, 129, 0.3);
 }
 
 .secreto-item {
     margin-bottom: 1.2rem;
     padding: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.secreto-item:hover {
-    background: rgba(255, 255, 255, 0.04);
 }
 
 .secreto-pregunta {
@@ -288,7 +276,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 1rem;
     cursor: pointer;
     transition: 0.3s;
-    font-family: 'Quicksand', sans-serif;
 }
 
 .btn-glass:hover {
@@ -298,7 +285,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .fecha-item {
     display: flex;
     flex-direction: column;
-    cursor: default; 
 }
 
 .fecha-item strong {
@@ -334,10 +320,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transform: scale(1.1);
 }
 
-/* --- DISEÑO DEL ALMANAQUE NATIVO --- */
+/* --- DISEÑO DEL ALMANAQUE NATIVO RE-AJUSTADO --- */
 #almanaque-visual {
     margin-bottom: 25px;
-    padding: 15px;
+    padding: 12px 8px; /* Ajuste fino de padding para evitar desborde */
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.02);
     border-radius: 15px;
@@ -374,14 +360,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .almanaque-dias {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 6px; /* Reducido levemente para que quepa perfecto el Sábado */
     text-align: center;
 }
 
 .dia-celda {
     color: #ccc;
-    padding: 8px 0;
-    font-size: 0.9rem;
+    padding: 6px 0;
+    font-size: 0.88rem;
     border-radius: 50%;
     cursor: pointer;
     transition: 0.2s;
@@ -400,7 +386,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 0;
 }
 
-/* Días resaltados en rosa porque tienen recuerdos en Firebase */
 .dia-con-evento {
     background: rgba(255, 107, 129, 0.25) !important;
     color: #ff6b81 !important;
@@ -409,7 +394,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 8px rgba(255, 107, 129, 0.3);
 }
 
-/* Día seleccionado */
 .dia-seleccionado {
     background: #ff6b81 !important;
     color: #fff !important;
