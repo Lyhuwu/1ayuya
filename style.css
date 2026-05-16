@@ -6,13 +6,7 @@
 }
 
 body {
-    /* Aquí pones el nombre de tu foto de fondo */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('fondo-sofi.jpg');
-    
-    background-size: cover; /* Hace que la imagen cubra toda la pantalla */
-    background-position: center; /* Centra la imagen */
-    background-attachment: fixed; /* ¡Esto la hace estática! No se moverá aunque deslices hacia abajo */
-    
+    background-color: #050505; 
     color: #e0e0e0;
     display: flex;
     justify-content: center;
@@ -248,4 +242,91 @@ header {
     line-height: 1.5;
     border-top: 1px dashed rgba(255, 255, 255, 0.15);
     padding-top: 1rem;
+}
+
+/* --- ESTILOS DEL CALENDARIO --- */
+.form-calendario {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.input-glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.input-glass::placeholder {
+    color: #999;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.btn-glass {
+    background: rgba(255, 107, 129, 0.15);
+    color: #ff6b81;
+    border: 1px solid rgba(255, 107, 129, 0.3);
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 107, 129, 0.3);
+}
+
+.fecha-item {
+    display: flex;
+    flex-direction: column;
+    cursor: default; 
+}
+
+.fecha-item strong {
+    color: #ff6b81; 
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.fecha-item p {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+}
+
+/* --- BOTÓN DE ELIMINAR EVENTOS --- */
+.fecha-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 5px;
+    transition: 0.2s;
+}
+
+.btn-eliminar:hover {
+    color: #ff4757; 
+    transform: scale(1.1);
 }
