@@ -6,13 +6,10 @@
     <title>Para Sofi | Nuestro Rincón</title>
     <link href="https://fonts.googleapis.com/css2?family=Allura&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link href="https://cdn.jsdelivr.net/npm/@uanderson/vanilla-calendar-pro@1.2.3/build/vanilla-calendar.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@uanderson/vanilla-calendar-pro@1.2.3/build/vanilla-calendar.min.js"></script>
 </head>
 <body>
 
@@ -29,7 +26,9 @@
 
         <main class="menu-grid">
             <a href="#" class="menu-card glass" target="_blank">
-                <div class="icon-container"><i class="fas fa-heart"></i></div>
+                <div class="icon-container">
+                    <i class="fas fa-heart"></i>
+                </div>
                 <div class="card-text">
                     <h2>Tus Cartitas</h2>
                     <p>Todo lo que te he escrito</p>
@@ -38,7 +37,9 @@
             </a>
 
             <a href="#" class="menu-card glass" target="_blank">
-                <div class="icon-container"><i class="fas fa-headphones"></i></div>
+                <div class="icon-container">
+                    <i class="fas fa-headphones"></i>
+                </div>
                 <div class="card-text">
                     <h2>Nuestra Playlist</h2>
                     <p>Para escuchar juntos</p>
@@ -47,7 +48,9 @@
             </a>
 
             <div class="menu-card glass" id="btn-curiosidades">
-                <div class="icon-container"><i class="fas fa-magic"></i></div>
+                <div class="icon-container">
+                    <i class="fas fa-magic"></i>
+                </div>
                 <div class="card-text">
                     <h2>Detrás de las Cartitas</h2>
                     <p>Secretos que no sabías</p>
@@ -56,7 +59,9 @@
             </div>
 
             <div class="menu-card glass" id="btn-calendario">
-                <div class="icon-container"><i class="fas fa-calendar-alt"></i></div>
+                <div class="icon-container">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
                 <div class="card-text">
                     <h2>Calendario</h2>
                     <p>Nuestras fechas importantes</p>
@@ -74,15 +79,18 @@
         <div class="modal-content glass">
             <span class="cerrar-modal" id="cerrar-curiosidades">&times;</span>
             <h2 class="titulo-modal titulo-elegante">Secretos Revelados 🤫</h2>
+            
             <div class="lista-secretos">
                 <div class="secreto-item glass-mini">
                     <h3 class="secreto-pregunta">🌹 Sobre "La Vie en Rose"</h3>
                     <p class="secreto-respuesta">La escuché por primera vez en una serie... y deseé con mucha emoción poder dedicársela algún día a la persona correcta. Y esa eres tú.</p>
                 </div>
+                
                 <div class="secreto-item glass-mini">
                     <h3 class="secreto-pregunta">🧸 El apodo</h3>
                     <p class="secreto-respuesta">Siempre me hace sonreír cuando pienso en este apodo y en lo especial que te has vuelto para mí desde que empezamos a usarlo.</p>
                 </div>
+
                 <div class="secreto-item glass-mini">
                     <h3 class="secreto-pregunta">🗓️ Felices meses</h3>
                     <p class="secreto-respuesta">Llegar hasta aquí juntos ha sido increíble. Quería dejarte este espacio guardado para que siempre recuerdes lo mucho que me importas.</p>
@@ -96,7 +104,7 @@
             <span class="cerrar-modal" id="cerrar-calendario">&times;</span>
             <h2 class="titulo-modal titulo-elegante">Nuestras Fechas 🗓️</h2>
             
-            <div id="almanaque-visual" class="glass-mini"></div>
+            <div id="almanaque-visual"></div>
 
             <div class="form-calendario">
                 <input type="date" id="fecha-input" class="input-glass">
