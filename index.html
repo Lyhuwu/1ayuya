@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Sofi | Nuestro Rincón</title>
-    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Quicksand:wght=400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
@@ -25,15 +25,6 @@
         </header>
 
         <main class="menu-grid">
-            <a href="https://wa.me/52TUNUMERODELBOT?text=%C2%A1Hola!%20Quiero%20activar%20las%20alertas%20m%C3%A1gicas%20de%20nuestro%20rinc%C3%B3n%20%F0%9F%92%96" class="menu-card glass" target="_blank" style="border: 1px solid rgba(37, 211, 102, 0.2);">
-                <div class="icon-container" style="background: rgba(37, 211, 102, 0.1); color: #25d366;"><i class="fab fa-whatsapp"></i></div>
-                <div class="card-text">
-                    <h2>Iniciar Bot 🧸</h2>
-                    <p>Activa tus alertas mágicas</p>
-                </div>
-                <i class="fas fa-chevron-right arrow"></i>
-            </a>
-
             <a href="#" class="menu-card glass" target="_blank">
                 <div class="icon-container"><i class="fas fa-heart"></i></div>
                 <div class="card-text">
@@ -101,12 +92,22 @@
         <div class="modal-content glass">
             <span class="cerrar-modal" id="cerrar-calendario">&times;</span>
             <h2 class="titulo-modal titulo-elegante">Nuestras Fechas 🗓️</h2>
+            
             <div id="almanaque-visual"></div>
+
+            <div id="modulo-bot" class="glass-mini" style="margin-bottom: 25px; padding: 15px; border: 1px solid rgba(255, 107, 129, 0.2); text-align: center;">
+                <p style="color: #fff; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600;">✨ ¡Activa tu Asistente Virtual! ✨</p>
+                <a href="https://wa.me/52TUNUMERODELBOT?text=%C2%A1Hola!%20Quiero%20activar%20las%20alertas%20m%C3%A1gicas%20de%20nuestro%20rinc%C3%B3n%20%F0%9F%92%96" target="_blank" class="btn-glass" style="display: block; text-decoration: none; background: rgba(37, 211, 102, 0.2); color: #25d366; border: 1px solid rgba(37, 211, 102, 0.4); font-size: 0.85rem;">
+                    <i class="fab fa-whatsapp"></i> Iniciar Mayordomo 🧸
+                </a>
+            </div>
+
             <div class="form-calendario">
                 <input type="date" id="fecha-input" class="input-glass">
                 <input type="text" id="desc-input" placeholder="¿Qué celebramos o qué haremos?" class="input-glass">
                 <button id="btn-guardar-fecha" class="btn-glass">Guardar Fecha</button>
             </div>
+
             <div id="lista-fechas" class="lista-secretos"></div>
         </div>
     </div>
