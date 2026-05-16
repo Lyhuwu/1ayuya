@@ -11,21 +11,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ENLAZAR EL DESPERTADOR AUTOMÁTICO (SERVICE WORKER)
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('Despertador de notificaciones listo.'))
-        .catch(err => console.error('Error al activar despertador:', err));
-}
+// ⚠️ REEMPLAZA ESTO CON LA URL LARGA QUE TE DARÁ MACRODROID EN TU CELULAR
+const URL_MI_BOT_PROPIO = "https://trigger.macrodroid.com/TU_CODIGO_AQUÍ/alerta_sofi";
 
 let fechaActualAlmanaque = new Date();
 let listaFechasGuardadas = []; 
 
 // 2. ELEMENTOS DE LA PÁGINA
-const modalCuriosidades = document.getElementById("modal-curiosidades");
-const btnCuriosidades = document.getElementById("btn-curiosidades");
-const cerrarCuriosidades = document.getElementById("cerrar-curiosidades");
-
 const modalCalendario = document.getElementById("modal-calendario");
 const btnCalendario = document.getElementById("btn-calendario");
 const cerrarCalendario = document.getElementById("cerrar-calendario");
@@ -36,15 +28,12 @@ const descInput = document.getElementById("desc-input");
 const listaFechas = document.getElementById("lista-fechas");
 const contenedorAlmanaque = document.getElementById("almanaque-visual");
 
-// 3. VENTANAS FLOTANTES
-btnCuriosidades.onclick = () => modalCuriosidades.style.display = "flex";
-cerrarCuriosidades.onclick = () => modalCuriosidades.style.display = "none";
+// Control de ventanas flotantes
+const modalCuriosidades = document.getElementById("modal-curiosidades");
+document.getElementById("btn-curiosidades").onclick = () => modalCuriosidades.style.display = "flex";
+document.getElementById("cerrar-curiosidades").onclick = () => modalCuriosidades.style.display = "none";
 
-btnCalendario.onclick = () => {
-    modalCalendario.style.display = "flex";
-    cargarFechas(); 
-    solicitarPermisoNotificaciones(); // Le pide permiso de forma nativa al abrir el calendario
-};
+btnCalendario.onclick = () => { modalCalendario.style.display = "flex"; cargarFechas(); };
 cerrarCalendario.onclick = () => modalCalendario.style.display = "none";
 
 window.onclick = (event) => {
@@ -55,33 +44,22 @@ window.onclick = (event) => {
 // Acordeón para secretos
 const secretos = document.querySelectorAll('.secreto-item');
 secretos.forEach(secreto => {
-    if(!secreto.classList.contains('fecha-item')){ 
-        secreto.addEventListener('click', () => {
+    const pregunta = secreto.querySelector('.secreto-pregunta');
+    if(pregunta) {
+        pregunta.addEventListener('click', () => {
             const respuesta = secreto.querySelector('.secreto-respuesta');
-            respuesta.style.display = (respuesta.style.display === "block") ? "none" : "block";
+            if(respuesta) {
+                respuesta.style.display = (respuesta.style.display === "block") ? "none" : "block";
+            }
         });
     }
 });
 
-// SOLICITAR PERMISO NATIVO DEL NAVEGADOR
-function solicitarPermisoNotificaciones() {
-    if ('Notification' in window) {
-        Notification.requestPermission().then(permission => {
-            if (permission === 'granted' && navigator.serviceWorker.controller) {
-                // Le avisa al despertador que haga una revisión rápida inicial
-                navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
-            }
-        });
-    }
-}
-
-// 4. FUNCIONES DEL ALMANAQUE NATIVO
+// 3. DIBUJAR ALMANAQUE NATIVO Y CONFIGURAR INTERACCIÓN
 function dibujarAlmanaque() {
     const año = fechaActualAlmanaque.getFullYear();
     const mes = fechaActualAlmanaque.getMonth();
-
     const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-    
     const primerDiaIndex = new Date(año, mes, 1).getDay(); 
     const totalDiasMes = new Date(año, mes + 1, 0).getDate();
 
@@ -97,15 +75,12 @@ function dibujarAlmanaque() {
         <div class="almanaque-dias">
     `;
 
-    for (let i = 0; i < primerDiaIndex; i++) {
-        html += `<div class="dia-celda dia-vacio"></div>`;
-    }
+    for (let i = 0; i < primerDiaIndex; i++) html += `<div class="dia-celda dia-vacio"></div>`;
 
     for (let dia = 1; dia <= totalDiasMes; dia++) {
         const mesFormateado = String(mes + 1).padStart(2, '0');
         const diaFormateado = String(dia).padStart(2, '0');
         const stringFechaCelda = `${año}-${mesFormateado}-${diaFormateado}`;
-
         const tieneEvento = listaFechasGuardadas.includes(stringFechaCelda);
         const claseEvento = tieneEvento ? "dia-con-evento" : "";
 
@@ -115,32 +90,25 @@ function dibujarAlmanaque() {
     html += `</div>`;
     contenedorAlmanaque.innerHTML = html;
 
-    document.getElementById("ant-mes").onclick = () => {
-        fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() - 1);
-        dibujarAlmanaque();
-    };
-    document.getElementById("sig-mes").onclick = () => {
-        fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() + 1);
-        dibujarAlmanaque();
-    };
+    document.getElementById("ant-mes").onclick = () => { fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() - 1); dibujarAlmanaque(); };
+    document.getElementById("sig-mes").onclick = () => { fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() + 1); dibujarAlmanaque(); };
 
+    // AL DAR CLICK EN UN DÍA DEL CALENDARIO:
     const celdas = contenedorAlmanaque.querySelectorAll('.dia-celda:not(.dia-vacio)');
     celdas.forEach(celda => {
         celda.onclick = () => {
             celdas.forEach(c => c.classList.remove('dia-seleccionado'));
             celda.classList.add('dia-seleccionado');
-            
             const fechaSeleccionada = celda.getAttribute('data-fecha');
             fechaInput.value = fechaSeleccionada;
 
+            // Si el día tiene un evento, baja de inmediato y lo enfoca con destello rosa
             if (celda.classList.contains('dia-con-evento')) {
                 const tarjetaObjetivo = document.getElementById(`tarjeta-${fechaSeleccionada}`);
                 if (tarjetaObjetivo) {
                     tarjetaObjetivo.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     tarjetaObjetivo.classList.add('tarjeta-enfocada');
-                    setTimeout(() => {
-                        tarjetaObjetivo.classList.remove('tarjeta-enfocada');
-                    }, 1500);
+                    setTimeout(() => tarjetaObjetivo.classList.remove('tarjeta-enfocada'), 1500);
                 }
             }
         };
@@ -164,11 +132,7 @@ function cargarFechas() {
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            notas.push({
-                id: doc.id,
-                fecha: data.fecha,
-                descripcion: data.descripcion
-            });
+            notas.push({ id: doc.id, fecha: data.fecha, descripcion: data.descripcion });
             listaFechasGuardadas.push(data.fecha); 
         });
 
@@ -185,81 +149,62 @@ function cargarFechas() {
             div.innerHTML = `
                 <div class="fecha-header">
                     <strong>${fechaBonita}</strong>
-                    <button class="btn-eliminar" onclick="eliminarFecha('${nota.id}')" title="Eliminar recuerdo">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
+                    <button class="btn-eliminar" onclick="eliminarFecha('${nota.id}')"><i class="fas fa-trash-alt"></i></button>
                 </div>
-                <p id="desc-${nota.id}" ondblclick="editarFecha('${nota.id}', '${nota.descripcion}')" title="Doble clic para editar">${nota.descripcion}</p>
+                <p id="desc-${nota.id}" ondblclick="editarFecha('${nota.id}', '${nota.descripcion}')">${nota.descripcion}</p>
                 <small style="color: #666; font-size: 0.75rem; margin-top: 5px; display: block;">💡 Doble clic en el texto para editar</small>
             `;
             listaFechas.appendChild(div);
         });
 
         dibujarAlmanaque();
-
-    }).catch((error) => {
-        console.error("Error al cargar:", error);
-        listaFechas.innerHTML = "<p style='text-align:center; color:#ff6b81;'>Error al conectar con la base de datos.</p>";
+        motorVerificacionPropio(notas); // Revisa si tu celular debe disparar el WhatsApp Business
     });
 }
 
-// --- GUARDAR EVENTO ---
-btnGuardarFecha.onclick = () => {
-    const fecha = fechaInput.value;
-    const desc = descInput.value;
+// --- MOTOR DE ALERTAS DIRECTO A TU WHATSAPP BUSINESS ---
+function motorVerificacionPropio(listaFechas) {
+    const hoy = new Date();
+    const mañana = new Date();
+    mañana.setDate(hoy.getDate() + 1);
 
-    if (fecha === "" || desc === "") {
-        alert("Por favor llena ambos campos para guardar la fecha 😊");
-        return;
-    }
+    const stringHoy = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+    const stringMañana = `${mañana.getFullYear()}-${String(mañana.getMonth()+1).padStart(2,'0')}-${String(mañana.getDate()).padStart(2,'0')}`;
 
-    btnGuardarFecha.innerText = "Guardando...";
-
-    db.collection("fechas").add({
-        fecha: fecha,
-        descripcion: desc,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        fechaInput.value = "";
-        descInput.value = "";
-        btnGuardarFecha.innerText = "Guardar Fecha";
-        cargarFechas(); 
+    listaFechas.forEach((item) => {
+        let mensajeAlerta = "";
         
-        // Al guardar una fecha nueva, le avisa al despertador para que actualice su memoria
-        if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
+        if (item.fecha === stringHoy) {
+            mensajeAlerta = `¡Es hoy! 🎉 Hoy celebramos vuestra fecha especial: ${item.descripcion}. ¡Feliz día! 💕`;
+        } else if (item.fecha === stringMañana) {
+            mensajeAlerta = `¡Recuerdo tierno! 🌹 Mañana se cumple un momento muy especial: ${item.descripcion}. ¡Que no se te pase! 🥰`;
         }
-    }).catch((error) => {
-        console.error("Error al guardar:", error);
-        btnGuardarFecha.innerText = "Error, intenta de nuevo";
+
+        if (mensajeAlerta !== "") {
+            // Envía la orden directa a tu MacroDroid usando tu URL personal
+            fetch(`${URL_MI_BOT_PROPIO}?alerta_msg=${encodeURIComponent(mensajeAlerta)}`, { mode: 'no-cors' })
+                .then(() => console.log("Señal enviada al WhatsApp Business con éxito."))
+                .catch(err => console.error("Error al conectar con MacroDroid:", err));
+        }
+    });
+}
+
+// --- MÉTODOS CRUD (GUARDAR, BORRAR, EDITAR) ---
+btnGuardarFecha.onclick = () => {
+    const fecha = fechaInput.value; const desc = descInput.value;
+    if (fecha === "" || desc === "") { alert("Por favor llena ambos campos 😊"); return; }
+    btnGuardarFecha.innerText = "Guardando...";
+    db.collection("fechas").add({ fecha: fecha, descripcion: desc }).then(() => {
+        fechaInput.value = ""; descInput.value = ""; btnGuardarFecha.innerText = "Guardar Fecha"; cargarFechas();
     });
 };
 
-// --- ELIMINAR EVENTO ---
 function eliminarFecha(id) {
-    if (confirm("¿Estás seguro de que quieres borrar este recuerdo? 🥺")) {
-        db.collection("fechas").doc(id).delete().then(() => {
-            cargarFechas(); 
-            if (navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
-            }
-        }).catch((error) => {
-            alert("No se pudo borrar, intenta de nuevo.");
-        });
-    }
+    if (confirm("¿Borrar este recuerdo? 🥺")) { db.collection("fechas").doc(id).delete().then(() => cargarFechas()); }
 }
 
-// --- EDITAR EVENTO ---
 function editarFecha(id, descripcionActual) {
     const nuevoTexto = prompt("Edita tu recuerdo o plan:", descripcionActual);
     if (nuevoTexto === null || nuevoTexto.trim() === "") return;
-
-    db.collection("fechas").doc(id).update({
-        descripcion: nuevoTexto
-    }).then(() => {
-        cargarFechas(); 
-        if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({ type: 'REVISAR_FECHAS' });
-        }
-    });
+    db.collection("fechas").doc(id).update({ descripcion: nuevoTexto }).then(() => cargarFechas());
 }
