@@ -12,6 +12,7 @@ body {
     justify-content: center;
     min-height: 100vh;
     overflow-x: hidden; 
+    position: relative;
 }
 
 .background-aesthetic {
@@ -20,35 +21,33 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0; /* Aseguramos que quede por encima del fondo negro */
-    pointer-events: none; /* Para que no estorbe si ella toca la pantalla */
+    z-index: 0; 
+    pointer-events: none;
     opacity: 0.6; 
 }
 
+/* Optimizado para que el pingüino se vea perfecto en la pantalla del celular */
 .imagen-destacada {
     position: absolute;
-    top: -40px;   
-    left: -70px;  
-    width: 260px; 
-    height: 260px;
+    top: 20px;   
+    left: -10px;  
+    width: 180px; 
+    height: 180px;
     background-image: url('pinguino.png'); 
     background-size: contain; 
     background-repeat: no-repeat;
     background-position: center;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15)); 
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
+/* Ocultado temporalmente para limpiar el fondo de enlaces rotos */
 .flores {
-    position: absolute;
-    bottom: -50px;
-    right: -80px;
-    width: 250px;
-    height: 350px;
-    background-image: url('https://i.imgur.com/vH9xH6s.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    filter: grayscale(100%) brightness(80%); 
+    display: none; 
+}
+
+.foto-pareja {
+    display: none; 
 }
 
 .app-container {
@@ -56,7 +55,7 @@ body {
     max-width: 400px; 
     padding: 2rem 1.5rem;
     position: relative;
-    z-index: 10; /* Los botones siempre estarán por encima del pingüino y flores */
+    z-index: 10; 
     display: flex;
     flex-direction: column;
 }
@@ -163,17 +162,6 @@ header {
     margin-top: 3rem;
     display: flex;
     justify-content: center;
-}
-
-.foto-pareja {
-    width: 150px;
-    height: 100px;
-    background-image: url('https://i.imgur.com/XF9VbN1.png');
-    background-size: cover;
-    background-position: center;
-    border-radius: 15px;
-    filter: grayscale(100%);
-    opacity: 0.7;
 }
 
 .modal {
