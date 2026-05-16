@@ -6,34 +6,22 @@
 }
 
 html {
-    background-color: #111111; 
+    background-color: #111111; /* Esto mata los destellos blancos de los bordes */
     overscroll-behavior-y: none; 
     -webkit-tap-highlight-color: transparent; 
 }
 
 body {
+    /* ¡Sin colores aquí para no tapar tu fondo! */
     color: #ffffff;
     display: flex;
     justify-content: center;
     min-height: 100vh;
     overflow-x: hidden; 
     position: relative;
-    background-color: #111111;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('fondo-sofi.jpg');
-    background-size: cover;
-    background-position: center;
-    z-index: -2;
-}
-
+/* AQUÍ ESTÁ TU FONDO REAL, FIJO Y HERMOSO */
 .background-aesthetic {
     position: fixed;
     top: 0;
@@ -42,6 +30,9 @@ body::before {
     height: 100%;
     z-index: -1; 
     pointer-events: none;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('fondo-sofi.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
 .imagen-destacada {
