@@ -50,7 +50,7 @@ document.querySelectorAll('.secreto-item').forEach(secreto => {
     }
 });
 
-// 3. ALMANAQUE
+// 3. DIBUJAR ALMANAQUE NATIVO (CON IDENTIFICADOR DE HOY)
 function dibujarAlmanaque() {
     const año = fechaActualAlmanaque.getFullYear();
     const mes = fechaActualAlmanaque.getMonth();
@@ -58,13 +58,26 @@ function dibujarAlmanaque() {
     const primerDiaIndex = new Date(año, mes, 1).getDay(); 
     const totalDiasMes = new Date(año, mes + 1, 0).getDate();
 
+    // Obtener la fecha de hoy para compararla renglón por renglón
+    const hoyObjeto = new Date();
+    const hoyAño = hoyObjeto.getFullYear();
+    const hoyMes = hoyObjeto.getMonth();
+    const hoyDia = hoyObjeto.getDate();
+
     let html = `<div class="almanaque-header"><button id="ant-mes"><i class="fas fa-chevron-left"></i></button><span>${nombresMeses[mes]} ${año}</span><button id="sig-mes"><i class="fas fa-chevron-right"></i></button></div><div class="almanaque-semana"><div>Do</div><div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sá</div></div><div class="almanaque-dias">`;
 
     for (let i = 0; i < primerDiaIndex; i++) html += `<div class="dia-celda dia-vacio"></div>`;
+    
     for (let dia = 1; dia <= totalDiasMes; dia++) {
         const f = `${año}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-        const clase = listaFechasGuardadas.includes(f) ? "dia-con-evento" : "";
-        html += `<div class="dia-celda ${clase}" data-fecha="${f}">${dia}</div>`;
+        
+        // Revisar si la celda es hoy
+        const esHoy = (año === hoyAño && mes === hoyMes && dia === hoyDia);
+        
+        const claseEvento = listaFechasGuardadas.includes(f) ? "dia-con-evento" : "";
+        const claseHoy = esHoy ? "dia-actual" : "";
+        
+        html += `<div class="dia-celda ${claseEvento} ${claseHoy}" data-fecha="${f}">${dia}</div>`;
     }
     html += `</div>`;
     contenedorAlmanaque.innerHTML = html;
@@ -78,9 +91,11 @@ function dibujarAlmanaque() {
             fechaInput.value = fecha;
             if (celda.classList.contains('dia-con-evento')) {
                 const tarjeta = document.getElementById(`tarjeta-${fecha}`);
-                tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                tarjeta.classList.add('tarjeta-enfocada');
-                setTimeout(() => tarjeta.classList.remove('tarjeta-enfocada'), 1500);
+                if(tarjeta) {
+                    tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    tarjeta.classList.add('tarjeta-enfocada');
+                    setTimeout(() => tarjeta.classList.remove('tarjeta-enfocada'), 1500);
+                }
             }
         };
     });
