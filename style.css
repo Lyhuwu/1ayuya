@@ -5,16 +5,34 @@
     font-family: 'Quicksand', sans-serif;
 }
 
+html {
+    background-color: #111111; /* Matamos el fondo blanco por defecto */
+    overscroll-behavior-y: none; /* Evita el rebote al hacer scroll */
+    -webkit-tap-highlight-color: transparent; /* Quita los parpadeos al tocar la pantalla */
+}
+
 body {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('fondo-sofi.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
     color: #ffffff;
     display: flex;
     justify-content: center;
     min-height: 100vh;
     overflow-x: hidden; 
+    position: relative;
+    background-color: #111111;
+}
+
+/* Truco maestro: el fondo en una capa estática para que no haya destellos */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('fondo-sofi.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
 }
 
 .background-aesthetic {
