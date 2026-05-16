@@ -11,8 +11,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ⚠️ REEMPLAZA ESTO CON LA URL LARGA QUE TE DARÁ MACRODROID EN TU CELULAR
-const URL_MI_BOT_PROPIO = "https://trigger.macrodroid.com/TU_CODIGO_AQUÍ/alerta_sofi";
+// ✅ URL EXACTA DE TU MACRODROID
+const URL_MI_BOT_PROPIO = "https://trigger.macrodroid.com/545af313-a7e7-4ca9-8a78-1072e5a07f97/alerta_sofi";
 
 let fechaActualAlmanaque = new Date();
 let listaFechasGuardadas = []; 
@@ -28,7 +28,6 @@ const descInput = document.getElementById("desc-input");
 const listaFechas = document.getElementById("lista-fechas");
 const contenedorAlmanaque = document.getElementById("almanaque-visual");
 
-// Control de ventanas flotantes
 const modalCuriosidades = document.getElementById("modal-curiosidades");
 document.getElementById("btn-curiosidades").onclick = () => modalCuriosidades.style.display = "flex";
 document.getElementById("cerrar-curiosidades").onclick = () => modalCuriosidades.style.display = "none";
@@ -41,7 +40,7 @@ window.onclick = (event) => {
     if (event.target == modalCalendario) modalCalendario.style.display = "none";
 };
 
-// Acordeón para secretos
+// Acordeón de secretos
 const secretos = document.querySelectorAll('.secreto-item');
 secretos.forEach(secreto => {
     const pregunta = secreto.querySelector('.secreto-pregunta');
@@ -55,7 +54,7 @@ secretos.forEach(secreto => {
     }
 });
 
-// 3. DIBUJAR ALMANAQUE NATIVO Y CONFIGURAR INTERACCIÓN
+// 3. DIBUJAR ALMANAQUE NATIVO
 function dibujarAlmanaque() {
     const año = fechaActualAlmanaque.getFullYear();
     const mes = fechaActualAlmanaque.getMonth();
@@ -93,7 +92,7 @@ function dibujarAlmanaque() {
     document.getElementById("ant-mes").onclick = () => { fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() - 1); dibujarAlmanaque(); };
     document.getElementById("sig-mes").onclick = () => { fechaActualAlmanaque.setMonth(fechaActualAlmanaque.getMonth() + 1); dibujarAlmanaque(); };
 
-    // AL DAR CLICK EN UN DÍA DEL CALENDARIO:
+    // Scroll automático al picar el día
     const celdas = contenedorAlmanaque.querySelectorAll('.dia-celda:not(.dia-vacio)');
     celdas.forEach(celda => {
         celda.onclick = () => {
@@ -102,7 +101,6 @@ function dibujarAlmanaque() {
             const fechaSeleccionada = celda.getAttribute('data-fecha');
             fechaInput.value = fechaSeleccionada;
 
-            // Si el día tiene un evento, baja de inmediato y lo enfoca con destello rosa
             if (celda.classList.contains('dia-con-evento')) {
                 const tarjetaObjetivo = document.getElementById(`tarjeta-${fechaSeleccionada}`);
                 if (tarjetaObjetivo) {
@@ -115,9 +113,9 @@ function dibujarAlmanaque() {
     });
 }
 
-// --- LEER Y DESPLEGAR EVENTOS (FIREBASE) ---
+// --- LEER EVENTOS DE FIREBASE Y MANDAR LAS ALERTAS ---
 function cargarFechas() {
-    listaFechas.innerHTML = "<p style='text-align:center; color:#999; margin-top: 10px;'>Buscando recuerdos...</p>";
+    listaFechas.innerHTML = "<p style='text-align:center; color:#ccc; margin-top: 10px;'>Buscando recuerdos...</p>";
     
     db.collection("fechas").get().then((querySnapshot) => {
         listaFechas.innerHTML = ""; 
@@ -125,7 +123,7 @@ function cargarFechas() {
         listaFechasGuardadas = []; 
         
         if (querySnapshot.empty) {
-            listaFechas.innerHTML = "<p style='text-align:center; color:#999; margin-top: 10px;'>Aún no hay fechas guardadas. ¡Añade la primera!</p>";
+            listaFechas.innerHTML = "<p style='text-align:center; color:#ccc; margin-top: 10px;'>Aún no hay fechas guardadas.</p>";
             dibujarAlmanaque(); 
             return;
         }
@@ -152,17 +150,17 @@ function cargarFechas() {
                     <button class="btn-eliminar" onclick="eliminarFecha('${nota.id}')"><i class="fas fa-trash-alt"></i></button>
                 </div>
                 <p id="desc-${nota.id}" ondblclick="editarFecha('${nota.id}', '${nota.descripcion}')">${nota.descripcion}</p>
-                <small style="color: #666; font-size: 0.75rem; margin-top: 5px; display: block;">💡 Doble clic en el texto para editar</small>
+                <small style="color: #bbb; font-size: 0.75rem; margin-top: 5px; display: block;">💡 Doble clic en el texto para editar</small>
             `;
             listaFechas.appendChild(div);
         });
 
         dibujarAlmanaque();
-        motorVerificacionPropio(notas); // Revisa si tu celular debe disparar el WhatsApp Business
+        motorVerificacionPropio(notas); // Llama al MacroDroid en secreto
     });
 }
 
-// --- MOTOR DE ALERTAS DIRECTO A TU WHATSAPP BUSINESS ---
+// --- EL MOTOR QUE DESPIERTA A TU CELULAR ---
 function motorVerificacionPropio(listaFechas) {
     const hoy = new Date();
     const mañana = new Date();
@@ -181,15 +179,14 @@ function motorVerificacionPropio(listaFechas) {
         }
 
         if (mensajeAlerta !== "") {
-            // Envía la orden directa a tu MacroDroid usando tu URL personal
             fetch(`${URL_MI_BOT_PROPIO}?alerta_msg=${encodeURIComponent(mensajeAlerta)}`, { mode: 'no-cors' })
-                .then(() => console.log("Señal enviada al WhatsApp Business con éxito."))
+                .then(() => console.log("Señal enviada a MacroDroid."))
                 .catch(err => console.error("Error al conectar con MacroDroid:", err));
         }
     });
 }
 
-// --- MÉTODOS CRUD (GUARDAR, BORRAR, EDITAR) ---
+// --- CRUD ---
 btnGuardarFecha.onclick = () => {
     const fecha = fechaInput.value; const desc = descInput.value;
     if (fecha === "" || desc === "") { alert("Por favor llena ambos campos 😊"); return; }
@@ -208,11 +205,3 @@ function editarFecha(id, descripcionActual) {
     if (nuevoTexto === null || nuevoTexto.trim() === "") return;
     db.collection("fechas").doc(id).update({ descripcion: nuevoTexto }).then(() => cargarFechas());
 }
-// Función para mandar a Sofi a activar su WhatsApp Business
-document.getElementById("btn-activar-wa").onclick = () => {
-    // ⚠️ PON TU NÚMERO EXTRA AQUÍ (Mantén el formato de puros números sin el signo +)
-    const numeroBusiness = "527341234567"; 
-    const textoMágico = encodeURIComponent("¡Hola! Quiero activar las alertas de nuestro rincón privado 💖");
-    
-    window.open(`https://wa.me/${numeroBusiness}?text=${textoMágico}`, '_blank');
-};
